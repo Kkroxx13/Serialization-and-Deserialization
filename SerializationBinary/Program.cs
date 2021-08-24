@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -15,14 +14,11 @@ namespace SerializationBinary
     {
         static void Main(string[] args)
         {
-            Person person = new Person() { FirstName = "Karan ", LastName = "Kanchan" };
-            Person person1 = new Person() { FirstName = "Sagar ", LastName = "Lad" };
-            Person person2 = new Person() { FirstName = "Bhavesh ", LastName = "Kukreja" };
 
 
-            string filePath = "data.save";
-            string filePath1 = "data1.save";
-            string filePath2 = "data2.save";
+            string filePath = "data.bin";
+            string filePath1 = "data1.xml";
+            string filePath2 = "data2.json";
 
             DataSerializer dataSerializer = new DataSerializer();
 
@@ -31,123 +27,96 @@ namespace SerializationBinary
             Person p2 = null;
 
 
-
-            dataSerializer.BinarySerialize(person, filePath);
-            p = dataSerializer.BinaryDeserialize(filePath) as Person;
-
-
-            dataSerializer.XmlSerialize(typeof(Person), person1, filePath1);
-            p1 = dataSerializer.XmlDeserialize(typeof(Person), filePath1) as Person;
-
-
-            dataSerializer.JsonSerialize(person2, filePath2);
-            p2 = dataSerializer.JsonDeserialize(typeof(Person), filePath2) as Person;
-
-            Console.WriteLine(p.FirstName);
-            Console.WriteLine(p.LastName);
-
-            Console.WriteLine(p1.FirstName);
-            Console.WriteLine(p1.LastName);
-
-            Console.WriteLine(p2.FirstName);
-            Console.WriteLine(p2.LastName);
-        }
-    }
-    [Serializable]
-    public class Person
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-    }
-
-    class DataSerializer
-    {
-        //Binary serialization and deserialization
-        public void BinarySerialize(object data, string filePath)
-        {
-            FileStream fileStream;
-            BinaryFormatter bf = new BinaryFormatter();
-            if (File.Exists(filePath))
-                File.Delete(filePath);
-            fileStream = File.Create(filePath);
-            bf.Serialize(fileStream, data);
-            fileStream.Close();
-
-        }
-        public object BinaryDeserialize(string filePath)
-        {
-            object obj = null;
-
-            FileStream fileStream;
-            BinaryFormatter bf = new BinaryFormatter();
-            if (File.Exists(filePath))
+            bool loopbreak = true;
+            while (loopbreak)
             {
-                fileStream = File.OpenRead(filePath);
-                obj = bf.Deserialize(fileStream);
-                fileStream.Close();
+                Console.WriteLine("1.Implement Binary Serialization and Deserialization");
+                Console.WriteLine("2.Implement XML Serialization and Deserialization");
+                Console.WriteLine("3.Implement JSON Serialization and Deserialization");
+                Console.WriteLine("Select your Choice");
+                int input = int.Parse(Console.ReadLine());
+
+                switch (input)
+                {
+                    case 1:
+                        Person person = new Person();
+                        Console.WriteLine("Enter the First Name");
+                        person.FirstName = (Console.ReadLine());
+                        Console.WriteLine("Enter Last Name");
+                        person.LastName = Console.ReadLine();
+                        Console.WriteLine("Enter Address");
+                        person.Address = Console.ReadLine();
+                        Console.WriteLine("Enter Email");
+                        person.email = Console.ReadLine();
+                        
+
+
+                        dataSerializer.BinarySerialize(person, filePath);
+                        p = dataSerializer.BinaryDeserialize(filePath) as Person;
+                        Console.WriteLine();
+                        Console.WriteLine("First Name :" + person.FirstName);
+                        Console.WriteLine("Last Name :" + person.LastName);
+                        Console.WriteLine("Address  :" + person.Address);
+                        Console.WriteLine("Email:" + person.email);
+                        Console.WriteLine();
+                        break;
+
+                    case 2:
+                        Person person1 = new Person();
+                        Console.WriteLine("Enter the firstName");
+                        person1.FirstName = (Console.ReadLine());
+                        Console.WriteLine("Enter Last Name");
+                        person1.LastName = Console.ReadLine();
+                        Console.WriteLine("Enter Address");
+                        person1.Address = Console.ReadLine();
+                        Console.WriteLine("Enter Email");
+                        person1.email = Console.ReadLine();
+
+                        dataSerializer.XmlSerialize(typeof(Person), person1, filePath1);
+                        p1 = dataSerializer.XmlDeserialize(typeof(Person), filePath1) as Person;
+                        Console.WriteLine();
+                        Console.WriteLine("First Name :" + person1.FirstName);
+                        Console.WriteLine("Last Name :" + person1.LastName);
+                        Console.WriteLine("Address  :" + person1.Address);
+                        Console.WriteLine("Email:" + person1.email);
+                        Console.WriteLine();
+                        break;
+
+                    case 3:
+
+                        Person person2 = new Person();
+                        Console.WriteLine("Enter the firstName");
+                        person2.FirstName = (Console.ReadLine());
+                        Console.WriteLine("Enter Last Name");
+                        person2.LastName = Console.ReadLine();
+                        Console.WriteLine("Enter Address");
+                        person2.Address = Console.ReadLine();
+                        Console.WriteLine("Enter Email");
+                        person2.email = Console.ReadLine();
+
+                        dataSerializer.JsonSerialize(person2, filePath2);
+                        p2 = dataSerializer.JsonDeserialize(typeof(Person), filePath2) as Person;
+                        Console.WriteLine();
+                        Console.WriteLine("First Name :" + person2.FirstName);
+                        Console.WriteLine("Last Name :" + person2.LastName);
+                        Console.WriteLine("Address  :" + person2.Address);
+                        Console.WriteLine("Email:" + person2.email);
+                        Console.WriteLine();
+
+                        break;
+
+                    default:
+                        Console.WriteLine("Please enter valid choice");
+                        loopbreak = false;
+                        break;
+                }
+
+                if (loopbreak)
+                    Console.WriteLine("Please enter valid option");
             }
-            return obj;
-        }
-
-        //XML Serialization and Deserialization
-
-        public void XmlSerialize(Type dataType, object data, string filePath1)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(dataType);
-            if (File.Exists(filePath1))
-            {
-                File.Delete(filePath1);
-            }
-            TextWriter writer = new StreamWriter(filePath1);
-            xmlSerializer.Serialize(writer, data);
-            writer.Close();
-
-        }
-        public object XmlDeserialize(Type dataType, string filePath1)
-        {
-            object obj = null;
-
-            XmlSerializer xmlSerializer = new XmlSerializer(dataType);
-            if (File.Exists(filePath1))
-            {
-                TextReader textReader = new StreamReader(filePath1);
-                obj = xmlSerializer.Deserialize(textReader);
-                textReader.Close();
-            }
-            return obj;
-        }
-
-        //Json Serialization and Deserialization
-
-        public void JsonSerialize(object data, string filePath2)
-        {
-            JsonSerializer jsonSerializer = new JsonSerializer();
-            if (File.Exists(filePath2))
-                File.Delete(filePath2);
-
-            StreamWriter sw = new StreamWriter(filePath2);
-            JsonWriter jsonWriter = new JsonTextWriter(sw);
-
-            jsonSerializer.Serialize(jsonWriter, data);
-            jsonWriter.Close();
-            sw.Close();
-        }
-
-        public object JsonDeserialize(Type dataType, string filePath2)
-        {
-            JObject obj = null;
-            JsonSerializer jsonSerializer = new JsonSerializer();
-            if (File.Exists(filePath2))
-            {
-                StreamReader sr = new StreamReader(filePath2);
-                JsonReader jsonReader = new JsonTextReader(sr);
-                obj = jsonSerializer.Deserialize(jsonReader) as JObject;
-                jsonReader.Close();
-                sr.Close();
-
-            }
-            return obj.ToObject(dataType);
 
         }
     }
+
+
 }
